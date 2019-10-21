@@ -10,7 +10,7 @@ int main(int argc, string argv[])
     // Check to see that only 1 argument was input
     if (argc != 2)
     {
-        printf("Usage: ./crack hash\n");
+        printf("Usage: ./task1 hash\n");
         return 1;
     }
 
