@@ -4,7 +4,7 @@
 #include <string.h>
 
 void rotate(int ltr_num, char kword[]);
-// bool compare(string hash, string txtin); - not in use
+
 int main(int argc, string argv[])
 {
     // Check to see that only 1 argument was input
@@ -46,7 +46,6 @@ int main(int argc, string argv[])
 
     printf("match not found - loop limit reached\n");
     return 1;
-
 }
 
 // Rotates first password letter by one and after full cycle (when it was'z')
@@ -70,6 +69,5 @@ void rotate(int ltr_num, char kword[])
         {
             kword[ltr_num + 1] = 65;
         }
-
     }
 }
