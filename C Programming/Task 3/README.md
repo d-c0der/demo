@@ -12,11 +12,11 @@ Implement a program that recovers JPEGs from a forensic image (card.raw file sto
 
 #### Example behavior:
 
-$ ./recover<br/>
+$ ./task3<br/>
 Usage: ./recover image<br/>
 $ echo $?<br/>
 1<br/>
 
-$ ./recover card.raw<br/>
+$ ./task3 card.raw<br/>
 $ echo $?<br/>
 0<br/>
