@@ -11,21 +11,21 @@
 •	If program is not executed with such, it reminds the user of correct usage, and main returns 1.<br/>
 
 #### Example behavior:
-$ ./bmpscaler
-Wrong number of arguments
-$ echo $?
+$ ./bmpscaler<br/>
+Wrong number of arguments<br/>
+$ echo $?<br/>
 1<br/>
 <br/>
-$ ./bmpscaler .5 large.bmp smaller.bmp
-$ echo $?
+$ ./bmpscaler .5 large.bmp smaller.bmp<br/>
+$ echo $?<br/>
 0<br/>
 <br/>
-$ ./bmpscaler small.bmp larger.bmp
-$ echo $?
+$ ./bmpscaler small.bmp larger.bmp<br/>
+$ echo $?<br/>
 0<br/>
 
 #### Warning:
 "Bmpscaler.c" was created and intended to run on Linux system.<br/>
 
 #### Extras:
-Additional header file "bmp.h" containing BMP related structure types is included.
+Header file "bmp.h" containing BMP related structure types is included.
