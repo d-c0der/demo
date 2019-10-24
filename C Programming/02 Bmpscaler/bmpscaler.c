@@ -1,6 +1,5 @@
 // Resizes a BMP file, argv[1] - foat from 0.0 to 100, argv[2] - source file name ( *.bmp) , argv[3] - outfile name
 // E.g. $ ./bmpscaler 0.3 picture.bmp new.bmp
-// Implemented even distribution algorithm with controlling fix
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -257,7 +256,6 @@ int main(int argc, char *argv[])
             fseek(inptr, (w1 * 3) + inpadding, SEEK_CUR);
         }
 
-
         for (int jv = 0; jv < linecopy[iv]; jv++)
         {
             if (linecount < h2)
@@ -380,8 +378,6 @@ int main(int argc, char *argv[])
     // success
     return 0;
 }
-
-//write(&count, &bi.biWidth, &triple, outptr)
 
 // write RGB triple to outfile
 void write(int *counter, int limit, RGBTRIPLE *inptr, FILE *outptr)
