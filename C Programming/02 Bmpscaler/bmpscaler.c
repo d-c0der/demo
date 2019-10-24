@@ -1,4 +1,5 @@
-// Resizes a BMP file, argv[1] - foat from 0.0 to 100, argv[2] - source file name ( *.bmp) , argv[3] - outfile neme
+// Resizes a BMP file, argv[1] - foat from 0.0 to 100, argv[2] - source file name ( *.bmp) , argv[3] - outfile name
+// E.g. $ ./bmpscaler 0.3 picture.bmp new.bmp
 // Implemented even distribution algorithm with controlling fix
 
 #include <stdio.h>
@@ -36,7 +37,6 @@ int main(int argc, char *argv[])
         printf("Scaling multiplier error, please input positive value from 0.0 to 100\n");
         return 1;
     }
-
 
     // remember filenames
     char *infile = argv[2];
@@ -357,8 +357,6 @@ int main(int argc, char *argv[])
         linecount++;
     }
 
-
-
     for (int i = 0; i < w1; i++)
     {
         printf("%i'th pixel copies: %i\n", i + 1, pixcopy[i]);
@@ -372,9 +370,6 @@ int main(int argc, char *argv[])
     printf("pixel printed after fix = %i\n", persistentcountfix);
     printf("pixels printed by algorithm = %i\n", linecountprefix);
     printf("total printed lines = %i\n", linecount);
-
-
-
 
     // close infile
     fclose(inptr);
