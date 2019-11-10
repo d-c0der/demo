@@ -1,5 +1,14 @@
+// Recovers JPEGs from a forensic image
+// Use name of source file with JPEGs as an argument
+// E.g.: $ ./jpgrecovery card.raw
+
 #include <stdio.h>
 #include <stdlib.h>
+
+#define blockSize 512
+
+int fourBytesAreJpg(unsigned char buffer[]);
+void writeToNew(char filename[], unsigned char buffer[], FILE **outPointer, int *errorFlagPtr);
 
 int main(int argc, char *argv[])
 {
@@ -9,74 +18,81 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // Creating buffer to store data
-    unsigned char buffer[513];
-    for (int i = 0; i < 513; i++)
-    {
-        buffer[i] = '\0';
-    }
-
-    // Open card memory file
-    FILE *image = fopen(argv[1], "r");
+    FILE *image = fopen(argv[1], "r"); // Open source image file
     if (!image)
     {
         printf("Error reading file\n");
         return 2;
     }
+
+    unsigned char buffer[blockSize + 1] = {'\0'}; // Buffer to store data
     int jpgcounter = 0;
-    int firstfound = 0;
+    int firstJpgFound = 0;
     char filename[] = "000.jpg";
-    FILE *output = NULL;
-    while (fread(buffer, 512, 1, image)) // Repeat till read returns 0 - EOF reached
+    int errorFlag = 0;
+    FILE *output = NULL; // File pointer to JPEG being processed
+
+    while (fread(buffer, blockSize, 1, image)) // Repeat till read returns 0 (EOF reached)
     {
-
-        // If found jpg beginning
-        if (buffer[0] == 0xff && buffer[1] == 0xd8
-            && buffer[2] == 0xff &&
-            buffer[3] > 0xdf && buffer[3] < 0xf0)
+        if (fourBytesAreJpg(buffer)) // If jpg start signature is detected in a buffer
         {
-
-            if (firstfound == 0) // If Jpg start was not encountered before
+            if (firstJpgFound == 0) // If no jpg files were encountered before
             {
-                output = fopen(filename, "w");
-                if (!output)
+                firstJpgFound = 1;
+                writeToNew(filename, buffer, &output, &errorFlag);
+                if (errorFlag != 0) // If writeToNew failed then stop main
                 {
-                    printf("Error writing jpg file\n");
-                    return 3;
+                    return errorFlag;
                 }
-                fwrite(buffer, 512, 1, output);
-                firstfound = 1;
             }
-            else // If jpg start was encountered before
+            else // If jpg files were encountered before
             {
-                fclose(output);
+                fclose(output); // Finalize currently opened file
                 jpgcounter++;
-                sprintf(filename, "%03i.jpg", jpgcounter);
-                output = fopen(filename, "w");
-                if (!output)
+                sprintf(filename, "%03i.jpg", jpgcounter); // Update filename for next Jpg file
+                writeToNew(filename, buffer, &output, &errorFlag);
+                if (errorFlag != 0) // If writeToNew failed then stop main
                 {
-                    printf("Error writing jpg file\n");
-                    return 3;
+                    return errorFlag;
                 }
-                fwrite(buffer, 512, 1, output);
             }
         }
-        // If jpg start not detected
-        else
+        else // If jpg start signature is not detected in a buffer
         {
-            if (firstfound == 0) // If Jpg start was not encountered before
+            if (firstJpgFound != 0) // If jpg files were encountered before
             {
-
+                fwrite(buffer, blockSize, 1, output); // Copy data from buffer to currently opened file
             }
-            else // If jpg start was encountered before
-            {
-                fwrite(buffer, 512, 1, output);
-
-            }
+            else // If no jpg files were encountered before then do nothing
+            {}
         }
     }
     fclose(image);
-    fclose(output);
+    if (output) // Finalize last opened jpg file if any were detected in a source image
+    {
+        fclose(output);
+    }
     printf("recovery complete\n");
+}
+
+int fourBytesAreJpg(unsigned char buffer[]) // Checks if first four bytes are JPEG signature
+{
+    return buffer[0] == 0xff &&
+    buffer[1] == 0xd8 &&
+    buffer[2] == 0xff &&
+    buffer[3] > 0xdf &&
+    buffer[3] < 0xf0;
+}
+
+void writeToNew(char filename[], unsigned char buffer[], FILE **outPointer, int *errorFlagPtr)
+{
+    *outPointer = fopen(filename, "w"); // Creates and opens in writing mode new jpg file
+    if (!*outPointer)
+    {
+        printf("Error writing jpg file\n");
+        *errorFlagPtr = 3;
+        return;
+    }
+    fwrite(buffer, blockSize, 1, *outPointer); // Copies data from buffer to opened file
 }
 
