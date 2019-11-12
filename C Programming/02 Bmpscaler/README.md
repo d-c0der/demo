@@ -16,11 +16,11 @@ Wrong number of arguments<br/>
 $ echo $?<br/>
 1<br/>
 <br/>
-$ ./bmpscaler .5 large.bmp smaller.bmp<br/>
+$ ./bmpscaler 0.5 picture.bmp smaller.bmp<br/>
 $ echo $?<br/>
 0<br/>
 <br/>
-$ ./bmpscaler small.bmp larger.bmp<br/>
+$ ./bmpscaler 3 picture.bmp new.bmp<br/>
 $ echo $?<br/>
 0<br/>
 
